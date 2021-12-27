@@ -4,6 +4,8 @@
   "description": "A simple Todo app using web component and lit-html",
   "main": "index.js",
   "scripts": {
+    "start":"web-dev-server --open --node-resolve",
+    "start:watch":"web-dev-server --open --node-resolve --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -12,5 +14,8 @@
   "dependencies": {
     "lit-element": "^3.0.2",
     "lit-html": "^2.0.2"
+  },
+  "devDependencies": {
+    "@web/dev-server": "^0.1.28"
   }
 }
