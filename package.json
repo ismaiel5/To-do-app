@@ -2,13 +2,17 @@
   "name": "todo-app",
   "version": "1.0.0",
   "description": "A simple Todo app using web component and lit-html",
-  "main": "index.js",
   "scripts": {
     "start":"web-dev-server --open --node-resolve",
     "start:watch":"web-dev-server --open --node-resolve --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": [
+    "web component",
+    "lit-html",
+    "lit-element",
+    "to do app"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
