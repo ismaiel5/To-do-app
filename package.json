@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "A simple Todo app using web component and lit-html",
   "scripts": {
-    "start":"web-dev-server --open --node-resolve",
-    "start:watch":"web-dev-server --open --node-resolve --watch",
+    "start": "web-dev-server --open --node-resolve",
+    "start:watch": "web-dev-server --open --node-resolve --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -16,8 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "lit-element": "^3.0.2",
-    "lit-html": "^2.0.2"
+    "lit": "^2.0.2"
   },
   "devDependencies": {
     "@web/dev-server": "^0.1.28"
