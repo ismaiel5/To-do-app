@@ -11,7 +11,23 @@ export class TodoApp extends LitElement {
     this.todoList = TASKS;
   }
 
-  static styles = css``;
+  static styles = css`
+    ul {
+      list-style-type: none;
+    }
+    .task-item {
+      width: 50%;
+    }
+    .task-item li {
+      display: inline;
+    }
+
+    .completed {
+      text-decoration-line: line-through;
+      color: #777;
+      user-select: none;
+    }
+  `;
 
   get newTask() {
     return this.shadowRoot.querySelector("#new-task");
@@ -22,6 +38,22 @@ export class TodoApp extends LitElement {
     this.requestUpdate();
   }
 
+  get tasks() {
+    return this.shadowRoot.querySelectorAll("#task");
+  }
+
+  _completeTask(index) {
+    const selectedItem = this.todoList[index];
+    selectedItem.completed = !selectedItem.completed;
+
+    if (selectedItem.completed) {
+      this.tasks[index].checked = true;
+    } else {
+      this.tasks[index].checked = false;
+    }
+    this.requestUpdate();
+  }
+
   render() {
     return html`<div>
       <h2>Add new task</h2>
@@ -29,7 +61,12 @@ export class TodoApp extends LitElement {
       <button @click=${this._addNewTask}>Add task</button>
 
       <ul>
-        ${this.todoList.map((task) => html` <li>${task.task}</li>`)}
+        ${this.todoList.map(
+          (task, index) => html` <div class="task-item" @click=${() => this._completeTask(index)}>
+            <input id="task" type="checkbox" />
+            <li class=${task.completed ? "completed" : ""}>${task.task}</li>
+          </div>`
+        )}
       </ul>
     </div>`;
   }
