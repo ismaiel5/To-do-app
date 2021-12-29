@@ -19,25 +19,36 @@ export class TodoApp extends LitElement {
       margin-left: 25%;
     }
     #title {
-      font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+      font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
       text-align: center;
     }
     .input-item {
       display: flex;
       justify-content: space-between;
-      gap: 5px;
+      gap: 2px;
     }
     .input-item #new-task {
       font-size: 1em;
       width: 100%;
-      padding: 5px;
+      padding: 10px;
       flex: 2.5;
+      border-radius: 5px 1px 1px 5px;
+      border: 1px solid #888888;
     }
     .input-item button {
       cursor: pointer;
       flex: 0.5;
+      border-radius: 1px 5px 5px 1px;
+      border: 1px solid #888888;
+      font-weight: bold;
     }
-
+    .input-item button:hover {
+      background-color: #1878c7;
+    }
+    .input-item button:active {
+      background-color: #2286d8;
+      color: #d4d7da;
+    }
     ul {
       list-style-type: none;
       padding-left: 0px;
@@ -69,6 +80,16 @@ export class TodoApp extends LitElement {
     }
     .task-item #task {
       transform: scale(1.2);
+      cursor: pointer;
+    }
+    #delete-btn {
+      cursor: pointer;
+      font-family: cursive;
+      font-weight: bold;
+      color: #9c9c9c;
+    }
+    #delete-btn:hover {
+      color: #b93919;
     }
 
     .completed {
@@ -82,7 +103,7 @@ export class TodoApp extends LitElement {
     return this.shadowRoot.querySelector("#new-task");
   }
   _addNewTask() {
-    if (!this.newTask.value) return ;
+    if (!this.newTask.value) return;
 
     this.todoList.push({ task: this.newTask.value, completed: false });
     this.newTask.value = "";
@@ -126,7 +147,7 @@ export class TodoApp extends LitElement {
                   <input id="task" type="checkbox" />
                   <li class=${task.completed ? "completed" : ""}>${task.task}</li>
                 </div>
-                <button @click=${() => this._deleteTask(index)}>X</button>
+                <a id="delete-btn" @click=${() => this._deleteTask(index)}>X</a>
               </div>
               <hr />
             `
