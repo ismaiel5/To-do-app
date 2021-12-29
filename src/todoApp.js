@@ -17,9 +17,18 @@ export class TodoApp extends LitElement {
     }
     .task-item {
       width: 50%;
+      cursor: pointer;
+      display: inline;
     }
     .task-item li {
       display: inline;
+    }
+    #new-task {
+      font-size: 1.2em;
+    }
+    #task {
+      transform: scale(1.2);
+      margin: 10px;
     }
 
     .completed {
@@ -54,6 +63,11 @@ export class TodoApp extends LitElement {
     this.requestUpdate();
   }
 
+  _deleteTask(index) {
+    this.todoList.splice(index, 1);
+    this.requestUpdate();
+  }
+
   render() {
     return html`<div>
       <h2>Add new task</h2>
@@ -62,9 +76,13 @@ export class TodoApp extends LitElement {
 
       <ul>
         ${this.todoList.map(
-          (task, index) => html` <div class="task-item" @click=${() => this._completeTask(index)}>
-            <input id="task" type="checkbox" />
-            <li class=${task.completed ? "completed" : ""}>${task.task}</li>
+          (task, index) => html` <div>
+            <div class="task-item" @click=${() => this._completeTask(index)}>
+              <input id="task" type="checkbox" />
+              <li class=${task.completed ? "completed" : ""}>${task.task}</li>
+            </div>
+
+            <button @click=${() => this._deleteTask(index)}>delete</button>
           </div>`
         )}
       </ul>
