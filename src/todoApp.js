@@ -82,6 +82,8 @@ export class TodoApp extends LitElement {
     return this.shadowRoot.querySelector("#new-task");
   }
   _addNewTask() {
+    if (!this.newTask.value) return ;
+
     this.todoList.push({ task: this.newTask.value, completed: false });
     this.newTask.value = "";
     this.requestUpdate();
