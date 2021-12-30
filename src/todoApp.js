@@ -3,12 +3,23 @@ import { TASKS } from "./mocks/todoList";
 
 export class TodoApp extends LitElement {
   static properties = {
-    todoList: { type: Array },
+    todoList: { state: true },
+    ccompletedTasksMessage: {},
   };
 
   constructor() {
     super();
-    this.todoList = TASKS;
+    this.ccompletedTasksMessage = "You have no tasks to be done. Lets add some!";
+    this.todoList = JSON.parse(localStorage.getItem("todoList"));
+
+    if (!this.todoList) {
+      this._loadInitialList();
+    }
+  }
+
+  _loadInitialList() {
+    localStorage.setItem("todoList", JSON.stringify(TASKS));
+    this.todoList = JSON.parse(localStorage.getItem("todoList"));
   }
 
   static styles = css`
@@ -98,14 +109,14 @@ export class TodoApp extends LitElement {
       user-select: none;
     }
   `;
-
   get newTask() {
     return this.shadowRoot.querySelector("#new-task");
   }
   _addNewTask() {
     if (!this.newTask.value) return;
-
+    this.todoList = JSON.parse(localStorage.getItem("todoList"));
     this.todoList.push({ task: this.newTask.value, completed: false });
+    localStorage.setItem("todoList", JSON.stringify(this.todoList));
     this.newTask.value = "";
     this.requestUpdate();
   }
@@ -115,8 +126,10 @@ export class TodoApp extends LitElement {
   }
 
   _completeTask(index) {
+    this.todoList = JSON.parse(localStorage.getItem("todoList"));
     const selectedItem = this.todoList[index];
     selectedItem.completed = !selectedItem.completed;
+    localStorage.setItem("todoList", JSON.stringify(this.todoList));
 
     if (selectedItem.completed) {
       this.tasks[index].checked = true;
@@ -127,7 +140,9 @@ export class TodoApp extends LitElement {
   }
 
   _deleteTask(index) {
+    this.todoList = JSON.parse(localStorage.getItem("todoList"));
     this.todoList.splice(index, 1);
+    localStorage.setItem("todoList", JSON.stringify(this.todoList));
     this.requestUpdate();
   }
 
@@ -138,21 +153,24 @@ export class TodoApp extends LitElement {
           <input id="new-task" placeholder="What needs to be done ?" type="text" />
           <button @click=${this._addNewTask}>Add task</button>
         </div>
+        ${this.todoList?.length > 0
+          ? html` <ul>
+              ${this.todoList.map(
+                (task, index) => html` <div class="task-item">
+                    <div @click=${() => this._completeTask(index)}>
+                      <input id="task" type="checkbox" ?checked=${task.completed} />
+                      <li class=${task.completed ? "completed" : ""}>${task.task}</li>
+                    </div>
+                    <a id="delete-btn" @click=${() => this._deleteTask(index)}>X</a>
+                  </div>
+                  <hr />`
+              )}
+            </ul>`
+          : html` <div>
+              <h3>${this.ccompletedTasksMessage}</h3>
+            </div>`}
 
-        <ul>
-          ${this.todoList.map(
-            (task, index) => html`
-              <div class="task-item">
-                <div @click=${() => this._completeTask(index)}>
-                  <input id="task" type="checkbox" />
-                  <li class=${task.completed ? "completed" : ""}>${task.task}</li>
-                </div>
-                <a id="delete-btn" @click=${() => this._deleteTask(index)}>X</a>
-              </div>
-              <hr />
-            `
-          )}
-        </ul>
+        <br />
       </div>`;
   }
 }
