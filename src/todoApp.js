@@ -1,5 +1,6 @@
 import { html, css, LitElement } from "lit";
 import { TASKS } from "./mocks/todoList";
+import { ADD_TASK, TO_DO_LIST, WHAT_NEED_TO_BE_DONE, YOU_HAVE_NO_TASK_TO_BE_DONE_LETS_ADD_SOME } from "./constants";
 
 export class TodoApp extends LitElement {
   static properties = {
@@ -9,7 +10,7 @@ export class TodoApp extends LitElement {
 
   constructor() {
     super();
-    this.ccompletedTasksMessage = "You have no tasks to be done. Lets add some!";
+    this.ccompletedTasksMessage = YOU_HAVE_NO_TASK_TO_BE_DONE_LETS_ADD_SOME;
     this.todoList = JSON.parse(localStorage.getItem("todoList"));
 
     if (!this.todoList) {
@@ -53,13 +54,13 @@ export class TodoApp extends LitElement {
       border: 1px solid #888888;
       font-weight: bold;
     }
-    .input-item button:hover, button:focus {
+    .input-item button:hover,
+    button:focus {
       background-color: #1878c7;
       color: #d4d7da;
     }
     .input-item button:active {
       background-color: #4698db;
-    
     }
     ul {
       list-style-type: none;
@@ -148,11 +149,11 @@ export class TodoApp extends LitElement {
   }
 
   render() {
-    return html` <h1 id="title">To do list</h1>
+    return html` <h1 id="title">${TO_DO_LIST}</h1>
       <div id="todo-container">
         <div class="input-item">
-          <input id="new-task" placeholder="What needs to be done ?" type="text" />
-          <button @click=${this._addNewTask}>Add task</button>
+          <input id="new-task" placeholder=${WHAT_NEED_TO_BE_DONE} type="text" />
+          <button @click=${this._addNewTask}>${ADD_TASK}</button>
         </div>
         ${this.todoList?.length > 0
           ? html` <ul>
