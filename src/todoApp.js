@@ -25,7 +25,6 @@ class TodoApp extends LitElement {
     localStorage.setItem("todoList", JSON.stringify(TASKS));
     this.todoList = JSON.parse(localStorage.getItem("todoList"));
   }
-
   static styles = css`
     #todo-container {
       padding: 0px 10px;
