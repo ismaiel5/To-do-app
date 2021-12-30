@@ -1,16 +1,19 @@
 import { html, css, LitElement } from "lit";
 import { TASKS } from "./mocks/todoList";
 import { ADD_TASK, TO_DO_LIST, WHAT_NEED_TO_BE_DONE, YOU_HAVE_NO_TASK_TO_BE_DONE_LETS_ADD_SOME } from "./constants";
+import { TodoListElement } from "./components/TodoListElement";
 
-export class TodoApp extends LitElement {
+class TodoApp extends LitElement {
   static properties = {
-    todoList: { state: true },
-    ccompletedTasksMessage: {},
+    todoList: { type: Array },
+  };
+
+  static scopedElements = {
+    "todo-list-element": TodoListElement,
   };
 
   constructor() {
     super();
-    this.ccompletedTasksMessage = YOU_HAVE_NO_TASK_TO_BE_DONE_LETS_ADD_SOME;
     this.todoList = JSON.parse(localStorage.getItem("todoList"));
 
     if (!this.todoList) {
@@ -31,7 +34,6 @@ export class TodoApp extends LitElement {
       margin-left: 25%;
     }
     #title {
-      font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
       text-align: center;
     }
     .input-item {
@@ -57,58 +59,14 @@ export class TodoApp extends LitElement {
     .input-item button:hover,
     button:focus {
       background-color: #1878c7;
-      color: #d4d7da;
+      color: #f2f4f7;
     }
     .input-item button:active {
-      background-color: #4698db;
+      background-color: #3892fa;
     }
-    ul {
-      list-style-type: none;
-      padding-left: 0px;
-      box-shadow: 0px 2px 10px 2px #888888;
-      border-radius: 10px;
-    }
-    ul hr {
-      margin: 0px;
-      border: 1px solid #e2e2e2;
-    }
-    ul hr:last-child {
-      display: none;
-    }
-
-    .task-item {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
-      padding: 15px;
-    }
-    .task-item > div,
-    .task-item button {
-      cursor: pointer;
-    }
-    li {
-      display: inline;
-      margin: 1em 0;
-    }
-    .task-item #task {
-      transform: scale(1.2);
-      cursor: pointer;
-    }
-    #delete-btn {
-      cursor: pointer;
-      font-family: cursive;
-      font-weight: bold;
-      color: #9c9c9c;
-    }
-    #delete-btn:hover {
-      color: #b93919;
-    }
-
-    .completed {
-      text-decoration-line: line-through;
-      color: #777;
-      user-select: none;
+    #todo-container > *,
+    .input-item > * {
+      font-family: "Cambria";
     }
   `;
   get newTask() {
@@ -116,36 +74,19 @@ export class TodoApp extends LitElement {
   }
   _addNewTask() {
     if (!this.newTask.value) return;
-    this.todoList = JSON.parse(localStorage.getItem("todoList"));
     this.todoList.push({ task: this.newTask.value, completed: false });
     localStorage.setItem("todoList", JSON.stringify(this.todoList));
+
+    // return the focus to the input field for smoother entries
     this.newTask.value = "";
     this.newTask.focus();
-  }
 
-  get tasks() {
-    return this.shadowRoot.querySelectorAll("#task");
-  }
-
-  _completeTask(index) {
-    this.todoList = JSON.parse(localStorage.getItem("todoList"));
-    const selectedItem = this.todoList[index];
-    selectedItem.completed = !selectedItem.completed;
-    localStorage.setItem("todoList", JSON.stringify(this.todoList));
-
-    if (selectedItem.completed) {
-      this.tasks[index].checked = true;
-    } else {
-      this.tasks[index].checked = false;
-    }
-    this.requestUpdate();
-  }
-
-  _deleteTask(index) {
-    this.todoList = JSON.parse(localStorage.getItem("todoList"));
-    this.todoList.splice(index, 1);
-    localStorage.setItem("todoList", JSON.stringify(this.todoList));
-    this.requestUpdate();
+    // adding a custom event to send the updated list on _addNewTask() function
+    this.dispatchEvent(
+      new CustomEvent("clicked", {
+        detail: this.todoList,
+      })
+    );
   }
 
   render() {
@@ -155,24 +96,7 @@ export class TodoApp extends LitElement {
           <input id="new-task" placeholder=${WHAT_NEED_TO_BE_DONE} type="text" />
           <button @click=${this._addNewTask}>${ADD_TASK}</button>
         </div>
-        ${this.todoList?.length > 0
-          ? html` <ul>
-              ${this.todoList.map(
-                (task, index) => html` <div class="task-item">
-                    <div @click=${() => this._completeTask(index)}>
-                      <input id="task" type="checkbox" ?checked=${task.completed} />
-                      <li class=${task.completed ? "completed" : ""}>${task.task}</li>
-                    </div>
-                    <a id="delete-btn" @click=${() => this._deleteTask(index)}>X</a>
-                  </div>
-                  <hr />`
-              )}
-            </ul>`
-          : html` <div>
-              <h3>${this.ccompletedTasksMessage}</h3>
-            </div>`}
-
-        <br />
+        <todo-list-element .todoList=${this.todoList} .completedTasksMessage=${YOU_HAVE_NO_TASK_TO_BE_DONE_LETS_ADD_SOME}> </todo-list-element>
       </div>`;
   }
 }
