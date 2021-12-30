@@ -53,12 +53,13 @@ export class TodoApp extends LitElement {
       border: 1px solid #888888;
       font-weight: bold;
     }
-    .input-item button:hover {
+    .input-item button:hover, button:focus {
       background-color: #1878c7;
+      color: #d4d7da;
     }
     .input-item button:active {
-      background-color: #2286d8;
-      color: #d4d7da;
+      background-color: #4698db;
+    
     }
     ul {
       list-style-type: none;
@@ -118,7 +119,7 @@ export class TodoApp extends LitElement {
     this.todoList.push({ task: this.newTask.value, completed: false });
     localStorage.setItem("todoList", JSON.stringify(this.todoList));
     this.newTask.value = "";
-    this.requestUpdate();
+    this.newTask.focus();
   }
 
   get tasks() {
